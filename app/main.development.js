@@ -1,11 +1,17 @@
-import { app, ipcMain, crashReporter } from 'electron'
-
+import { app, remote, ipcMain, crashReporter } from 'electron'
+import fs from 'fs'
 import createMainWindow from './main/createWindow'
 import createBackgroundWindow from './background/createWindow'
 import config from './lib/config'
 import AppTray from './main/createWindow/AppTray'
 import autoStart from './main/createWindow/autoStart'
 import initAutoUpdater from './initAutoUpdater'
+
+const electronApp = remote ? remote.app : app
+const userDataPath = electronApp.getPath('userData')
+if (!fs.existsSync(userDataPath)) {
+  fs.mkdirSync(userDataPath)
+}
 
 let trayIconSrc = `${__dirname}/tray_icon.png`
 if (process.platform === 'darwin') {
